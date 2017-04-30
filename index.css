@@ -33,6 +33,8 @@ body{
 		}
 		.header{
 			color: #333;
+			height: 500px;
+			width: 100%;
 		}
 		.header > h1{
 			text-align: center;
