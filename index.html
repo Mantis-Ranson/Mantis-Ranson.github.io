@@ -1,64 +1,39 @@
 <!DOCTYPE html>
-<html lang="ja">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <script src="https://cdn.webrtc.ecl.ntt.com/skyway-latest.js"></script>
-  <title>Doctor</title>
-</head>
-<body>
-    <video id="my-video" width="400px" autoplay muted playsinline></video>
-    <p id="my-id"></p>
-    <!-- <button id="make-call">Make Call</button> -->
-    <video id="their-video" width="400px" autoplay muted playsinline></video>
-    <script>
-        let localStream;
-      
-        // camera image acquisition
-        navigator.mediaDevices.getUserMedia({video: true, audio: true})
-          .then( stream => {
-          // On success, the video element is set to a camera image and played back.
-          const videoElm = document.getElementById('my-video')
-          videoElm.srcObject = stream;
-          videoElm.play();
-          // Save the camera image to a global variable so that it can be returned to the other party when a call comes in.
-          localStream = stream;
-        }).catch( error => {
-          // Outputs error log in case of failure.
-          console.error('mediaDevice.getUserMedia() error:', error);
-          return;
-        });
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>SkyWay - Room example</title>
+    <link rel="stylesheet" href="../_shared/style.css">
+  </head>
+  <body>
+    <div class="container">
+      <h1 class="heading">Room example</h1>
+      <p class="note">
+        Change Room mode (before join in a room):
+        <a href="#">mesh</a> / <a href="#sfu">sfu</a>
+      </p>
+      <div class="room">
+        <div>
+          <video id="js-local-stream"></video>
+          <span id="js-room-mode"></span>:
+          <input type="text" placeholder="Room Name" id="js-room-id">
+          <button id="js-join-trigger">Join</button>
+          <button id="js-leave-trigger">Leave</button>
+        </div>
 
-        const peer = new Peer({
-            key: '32a11764-ff9c-4fd7-8cae-b2ba01064625',
-            debug: 3
-        });
+        <div class="remote-streams" id="js-remote-streams"></div>
 
-        peer.on('open', () => {
-            document.getElementById('my-id').textContent = peer.id;
-        });
-
-        // Function to set an event listener
-        const setEventListener = mediaConnection => {
-            mediaConnection.on('stream', stream => {
-                // Set a camera image to the video element and play it
-                const videoElm = document.getElementById('their-video')
-                videoElm.srcObject = stream;
-                videoElm.play();
-            });
-        }
-
-        peer.on('call', mediaConnection => {
-            mediaConnection.answer(localStream);
-            setEventListener(mediaConnection);
-        });
-        /*
-        document.getElementById('make-call').onclick = () => {
-            const theirID = document.getElementById('their-id').value;
-            const mediaConnection = peer.call(theirID, localStream);
-            setEventListener(mediaConnection);
-        };
-        */
-      </script>
-</body>
+        <div>
+          <pre class="messages" id="js-messages"></pre>
+          <input type="text" id="js-local-text">
+          <button id="js-send-trigger">Send</button>
+        </div>
+      </div>
+      <p class="meta" id="js-meta"></p>
+    </div>
+    <script src="//cdn.webrtc.ecl.ntt.com/skyway-latest.js"></script>
+    <script src="../_shared/key.js"></script>
+    <script src="./script.js"></script>
+  </body>
 </html>
